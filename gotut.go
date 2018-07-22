@@ -1,22 +1,21 @@
 package main
 
 import (
+	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"encoding/xml"
 )
 
 type SitemapIndex struct {
 	Locations []Location `xml:"sitemap"`
-
 }
 
 type Location struct {
 	Loc string `xml:"loc"`
 }
 
-func (l Location) String() string{
+func (l Location) String() string {
 	return fmt.Sprintf(l.Loc)
 }
 
@@ -31,7 +30,5 @@ func main() {
 	xml.Unmarshal(bytes, &s)
 
 	fmt.Println(s.Locations)
-
-	
 
 }
