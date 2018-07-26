@@ -8,11 +8,22 @@ import (
 
 var wg sync.WaitGroup
 
-func say(s string){
+func cleanup(){
 	defer wg.Done()
+	if r := recover(); r != nil{
+		fmt.Println("Recovered in cleanup:", r)
+	}
+	
+}
+
+func say(s string){
+	defer cleanup()
 	for i := 0; i< 3;i++{
 		fmt.Println(s)
 		time.Sleep(time.Millisecond * 100)
+		if i == 2{
+			panic("Oh dear a 2")
+		}
 	}
 	
 }
