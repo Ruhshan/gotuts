@@ -1,43 +1,21 @@
 package main
 
-import (
-	"fmt"
-	"time"
-	"sync"
-)
-
-var wg sync.WaitGroup
-
-func cleanup(){
-	defer wg.Done()
-	if r := recover(); r != nil{
-		fmt.Println("Recovered in cleanup:", r)
-	}
+import "fmt"
 	
-}
+func foo(c chan int, someValue int){
 
-func say(s string){
-	defer cleanup()
-	for i := 0; i< 3;i++{
-		fmt.Println(s)
-		time.Sleep(time.Millisecond * 100)
-		if i == 2{
-			panic("Oh dear a 2")
-		}
-	}
-	
+	c <- someValue * 5
 }
-
 
 func main() {
-	wg.Add(1)
-	go say("hey")
-	wg.Add(1)
-	go say("There")
-	//wg.Wait()
+	fooVal := make(chan int)
+	go foo(fooVal, 5)
+	go foo(fooVal, 3)
 
-	wg.Add(1)
-	go say("Hi")
-	wg.Wait()
+	v1 := <- fooVal
+	v2 := <- fooVal
+
+	fmt.Println(v1,v2)
+
 
 }
