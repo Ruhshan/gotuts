@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -17,17 +16,26 @@ type helloRequest struct {
 
 func helloFunc(w http.ResponseWriter, r *http.Request) {
 
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, "Bad request", http.StatusBadRequest)
-		return
-	}
+	// body, err := ioutil.ReadAll(r.Body)
+	// if err != nil {
+	// 	http.Error(w, "Bad request", http.StatusBadRequest)
+	// 	return
+	// }
+
+	// var request helloRequest
+	// err = json.Unmarshal(body, &request)
+	// if err != nil {
+	// 	http.Error(w, "Bad request", http.StatusBadRequest)
+	// 	return
+	// }
 
 	var request helloRequest
-	err = json.Unmarshal(body, &request)
+	decoder := json.NewDecoder(r.Body)
+
+	err := decoder.Decode(&request)
+
 	if err != nil {
-		http.Error(w, "Bad request", http.StatusBadRequest)
-		return
+		http.Error(w, "Bad Request", http.StatusBadRequest)
 	}
 
 	response := helloResponse{Message: "Hello " + request.Name}
